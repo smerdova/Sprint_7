@@ -1,5 +1,6 @@
 package ru.praktikum.steps;
 
+import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -11,6 +12,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public abstract class OrderSteps {
+    @Step("Отправляем POST запрос на /api/v1/orders")
     public static ValidatableResponse create(
                             String firstName,
                             String lastName,
@@ -59,6 +61,7 @@ public abstract class OrderSteps {
                 .then();
     }
 
+    @Step("Отправляем GET запрос на /api/v1/orders")
     public static ValidatableResponse get(Integer courierId, String nearestStation,
                                              Integer limit, Integer page) {
         RequestSpecification request = given()
@@ -84,6 +87,7 @@ public abstract class OrderSteps {
                 .then();
     }
 
+    @Step("Отправляем PUT запрос на /api/v1/orders/cancel")
     public static ValidatableResponse cancel(int track) {
         Map<String, Object> jsonAsMap = new HashMap<>();
         jsonAsMap.put("track", track);

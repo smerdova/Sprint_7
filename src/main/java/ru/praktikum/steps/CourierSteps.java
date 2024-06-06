@@ -1,5 +1,6 @@
 package ru.praktikum.steps;
 
+import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import ru.praktikum.Configuration;
@@ -10,6 +11,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public abstract class CourierSteps {
+    @Step("Отправляем POST запрос на /api/v1/courier")
     public static ValidatableResponse create(String login, String password, String firstName) {
         Map<String, Object> jsonAsMap = new HashMap<>();
         if (login != null) {
@@ -31,6 +33,7 @@ public abstract class CourierSteps {
                 .then();
     }
 
+    @Step("Отправляем POST запрос на /api/v1/courier/login")
     public static ValidatableResponse login(String login, String password) {
         Map<String, Object> jsonAsMap = new HashMap<>();
         if (login != null) {
@@ -49,6 +52,7 @@ public abstract class CourierSteps {
                 .then();
     }
 
+    @Step("Отправляем DELETE запрос на /api/v1/courier/{id}")
     public static ValidatableResponse delete(int id) {
         return given()
                 .contentType(ContentType.JSON)
