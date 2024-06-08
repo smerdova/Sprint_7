@@ -5,80 +5,41 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import ru.praktikum.Configuration;
-
-import java.util.HashMap;
-import java.util.Map;
+import ru.praktikum.model.OrderCancelRequest;
+import ru.praktikum.model.OrderCreateRequest;
+import ru.praktikum.model.OrderListRequest;
 
 import static io.restassured.RestAssured.given;
 
 public abstract class OrderSteps {
     @Step("Отправляем POST запрос на /api/v1/orders")
-    public static ValidatableResponse create(
-                            String firstName,
-                            String lastName,
-                            String address,
-                            String metroStation,
-                            String phone,
-                            Integer rentTime,
-                            String deliveryDate,
-                            String comment,
-                            String[] color) {
-        Map<String, Object> jsonAsMap = new HashMap<>();
-        if (firstName != null) {
-            jsonAsMap.put("firstName", firstName);
-        }
-        if (lastName != null) {
-            jsonAsMap.put("lastName", lastName);
-        }
-        if (address != null) {
-            jsonAsMap.put("address", address);
-        }
-        if (metroStation != null) {
-            jsonAsMap.put("metroStation", metroStation);
-        }
-        if (phone != null) {
-            jsonAsMap.put("phone", phone);
-        }
-        if (rentTime != null) {
-            jsonAsMap.put("rentTime", rentTime);
-        }
-        if (deliveryDate != null) {
-            jsonAsMap.put("deliveryDate", deliveryDate);
-        }
-        if (comment != null) {
-            jsonAsMap.put("comment", comment);
-        }
-        if (color != null) {
-            jsonAsMap.put("color", color);
-        }
-
+    public static ValidatableResponse create(OrderCreateRequest order) {
         return given()
                 .contentType(ContentType.JSON)
                 .baseUri(Configuration.BASE_URL)
-                .body(jsonAsMap)
+                .body(order)
                 .when()
                 .post("/api/v1/orders")
                 .then();
     }
 
     @Step("Отправляем GET запрос на /api/v1/orders")
-    public static ValidatableResponse get(Integer courierId, String nearestStation,
-                                             Integer limit, Integer page) {
+    public static ValidatableResponse get(OrderListRequest query) {
         RequestSpecification request = given()
                 .contentType(ContentType.JSON)
                 .baseUri(Configuration.BASE_URL);
 
-        if (courierId != null) {
-            request.param("courierId", courierId);
+        if (query.getCourierId() != null) {
+            request.param("courierId", query.getCourierId());
         }
-        if (nearestStation != null) {
-            request.param("nearestStation", nearestStation);
+        if (query.getNearestStation() != null) {
+            request.param("nearestStation", query.getNearestStation());
         }
-        if (limit != null) {
-            request.param("limit", limit);
+        if (query.getLimit() != null) {
+            request.param("limit", query.getLimit());
         }
-        if (page != null) {
-            request.param("page", page);
+        if (query.getPage() != null) {
+            request.param("page", query.getPage());
         }
 
         return request
@@ -88,14 +49,11 @@ public abstract class OrderSteps {
     }
 
     @Step("Отправляем PUT запрос на /api/v1/orders/cancel")
-    public static ValidatableResponse cancel(int track) {
-        Map<String, Object> jsonAsMap = new HashMap<>();
-        jsonAsMap.put("track", track);
-
+    public static ValidatableResponse cancel(OrderCancelRequest request) {
         return given()
                 .contentType(ContentType.JSON)
                 .baseUri(Configuration.BASE_URL)
-                .body(jsonAsMap)
+                .body(request)
                 .when()
                 .put("/api/v1/orders/cancel")
                 .then();
